@@ -142,12 +142,15 @@ class SNMPSimulator:
 
                 if is_anomaly:
                     value_range = ranges["anomaly"]
-                    threshold = ranges["normal"][0] * 0.5
+                    threshold = ranges["normal"][0] * 0.5 if len(ranges["normal"]) > 0 else 0
                 else:
                     value_range = ranges["normal"]
-                    threshold = value_range[0] * 2
+                    threshold = value_range[0] * 2 if len(value_range) > 0 else 0
 
-                value = random.uniform(value_range[0], value_range[1])
+                if len(value_range) == 1:
+                    value = value_range[0]
+                else:
+                    value = random.uniform(value_range[0], value_range[1])
                 if metric_name in ["ifOperStatus"]:
                     value = 1 if not is_anomaly else 2
 

@@ -1,7 +1,6 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 import asyncio
 import json
@@ -25,19 +24,9 @@ app.add_middleware(
 )
 
 workflow = NetworkFaultAnalysisWorkflow()
-topology_sim = TopologySimulator()
+topo_sim = TopologySimulator()
 syslog_sim = SyslogSimulator()
 snmp_sim = SNMPSimulator()
-
-
-class DetectionRequest(BaseModel):
-    duration: int = 10
-    devices: Optional[List[str]] = None
-
-
-class ExecuteCommandRequest(BaseModel):
-    command: str
-    device: str
 
 
 @app.get("/")
@@ -97,13 +86,21 @@ async def get_metrics(devices: Optional[str] = None):
 
 
 @app.post("/api/detect")
-async def start_detection(request: DetectionRequest):
+async def start_detection(request: Request):
+    try:
+        body = await request.json() if await request.body() else {}
+    except:
+        body = {}
     result = workflow.analyze()
     return result
 
 
 @app.post("/api/detect/stream")
-async def start_detection_stream(request: DetectionRequest):
+async def start_detection_stream(request: Request):
+    try:
+        body = await request.json() if await request.body() else {}
+    except:
+        body = {}
     async def event_generator():
         reasoning_chain = []
 
@@ -162,13 +159,17 @@ async def start_detection_stream(request: DetectionRequest):
 
 
 @app.post("/api/execute")
-async def execute_command(request: ExecuteCommandRequest):
+async def execute_command(request: Request):
+    try:
+        body = await request.json()
+    except:
+        body = {}
     await asyncio.sleep(1.5)
 
     return {
         "success": True,
-        "command": request.command,
-        "device": request.device,
+        "command": body.get("command", ""),
+        "device": body.get("device", ""),
         "output": "Command executed successfully",
         "timestamp": datetime.now().isoformat()
     }

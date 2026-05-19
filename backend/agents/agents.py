@@ -118,11 +118,11 @@ class DataCollectorAgent:
 
         state["metrics"] = [
             {
-                "timestamp": m.timestamp,
-                "device": m.device,
-                "metric_name": m.metric_name,
-                "value": m.value,
-                "threshold": m.threshold
+                "timestamp": m.get("timestamp"),
+                "device": m.get("device"),
+                "metric_name": m.get("metric_name"),
+                "value": m.get("value"),
+                "threshold": m.get("threshold")
             }
             for m in metrics
         ]
