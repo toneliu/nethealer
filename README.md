@@ -4,6 +4,12 @@
 
 自动检测企业内网中的网络故障（如丢包、断连、高延迟），定位根本原因（具体交换机端口、链路或设备），并执行自动恢复动作。
 
+## 界面展示
+
+| 网络拓扑 | 监控仪表盘 | 故障检测 |
+|---------|-----------|---------|
+| ![网络拓扑](screenshots/topology.png) | ![监控仪表盘](screenshots/dashboard.png) | ![故障检测](screenshots/detection.png) |
+
 ## 核心特性
 
 - **多 Agent 协作**: 数据采集Agent、日志解析Agent、拓扑感知Agent、推理Agent、执行Agent
